@@ -72,7 +72,7 @@ export default function Manifesto() {
       {/* --- BLOCO 1: A DEFINIÇÃO (Esquerda) --- */}
       <div className="manifesto-block-left relative md:w-1/2 md:pr-20 mb-32 md:mb-0 md:text-right">
         <span className="text-[10px] font-mono text-emerald-500 tracking-widest block mb-4">
-          // 01. GENESIS
+          {/* 01. GENESIS */}
         </span>
         <h2 className="text-3xl md:text-5xl font-light text-white leading-tight">
           O código não é uma ferramenta.<br/>
@@ -86,7 +86,7 @@ export default function Manifesto() {
       {/* --- BLOCO 2: O CAOS (Direita - Mais abaixo) --- */}
       <div className="manifesto-block-right relative md:w-1/2 md:ml-auto md:pl-20 mt-20 md:mt-40">
         <span className="text-[10px] font-mono text-red-500 tracking-widest block mb-4">
-          // 02. ENTROPY
+          {/* 02. ENTROPY */}
         </span>
         <h2 className="text-4xl md:text-6xl font-bold text-white leading-none tracking-tighter mix-blend-difference">
           CHAOS IS<br/>

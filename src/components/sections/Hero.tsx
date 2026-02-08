@@ -1,124 +1,138 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
 import gsap from 'gsap';
-import HackerText from '../ui/HackerText';
+
+function AnimatedCore() {
+  return (
+    <Sphere visible args={[1, 100, 200]} scale={2.5}>
+      <MeshDistortMaterial
+        color="#10b981"
+        attach="material"
+        distort={0.4}
+        speed={1.5}
+        roughness={0.2}
+        metalness={0.9}
+      />
+    </Sphere>
+  );
+}
 
 export default function Hero() {
   const containerRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const quoteContainerRef = useRef<HTMLDivElement>(null);
-  
-  // Estado para a posição do mouse (Spotlight Effect)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const tl = gsap.timeline();
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline();
 
-    // 1. O Título Gigante entra com peso
-    tl.fromTo(titleRef.current, 
-      { y: 100, opacity: 0, filter: "blur(20px)" },
-      { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.5, ease: "power4.out" }
-    )
-    // 2. A Frase entra logo a seguir
-    .fromTo(quoteContainerRef.current,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: "power2.out" },
-      "-=1.0"
-    );
+      // Animação de Entrada
+      tl.fromTo(titleRef.current,
+        { y: 100, opacity: 0, rotateX: -20 },
+        { y: 0, opacity: 1, rotateX: 0, duration: 1.5, ease: "power4.out", delay: 0.5 }
+      );
 
-    // Lógica do Spotlight (Luz que segue o mouse)
-    const handleMouseMove = (e: MouseEvent) => {
-      if (quoteContainerRef.current) {
-        const rect = quoteContainerRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        });
-      }
-    };
+      tl.fromTo(".hero-data",
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.1, duration: 1, ease: "power2.out" },
+        "-=1"
+      );
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, containerRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <section 
-      id="hero" 
-      ref={containerRef}
-      className="h-screen w-full flex flex-col justify-center items-center relative z-10 overflow-hidden select-none px-4"
+      ref={containerRef} 
+      className="relative h-screen w-full bg-black overflow-hidden flex flex-col justify-center px-6 md:px-20 pt-20"
     >
       
-      {/* --- LAYER 1: O NOME GIGANTE (Imponente) --- */}
-      <div 
-        ref={titleRef}
-        className="relative z-20 flex flex-col items-center justify-center mix-blend-difference leading-[0.85]"
-      >
-        <h1 className="text-[15vw] md:text-[13vw] font-black tracking-tighter text-white m-0 p-0 hover:text-white/90 transition-colors duration-500 cursor-default">
-          WILLIAM
-        </h1>
-        <h1 className="text-[15vw] md:text-[13vw] font-black tracking-tighter text-white m-0 p-0 hover:text-white/90 transition-colors duration-500 cursor-default">
-          REIS
-        </h1>
+      {/* BACKGROUND 3D */}
+      <div className="absolute inset-0 z-0 opacity-40 md:opacity-60 pointer-events-none md:pointer-events-auto">
+        <Canvas dpr={[1, 2]}>
+          <Suspense fallback={null}>
+            <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[10, 10, 5]} intensity={1} />
+            <pointLight position={[-10, -10, -5]} color="#10b981" intensity={2} />
+            <AnimatedCore />
+          </Suspense>
+        </Canvas>
       </div>
 
-      {/* --- LAYER 2: A FRASE SURREAL (Spotlight Interactive) --- */}
+      {/* BACKGROUND GRID */}
       <div 
-        ref={quoteContainerRef}
-        className="mt-16 relative z-30 max-w-2xl group rounded-xl p-1"
-      >
-        {/* O "Fundo" do Spotlight. 
-            É um gradiente radial que muda de posição baseado no mousePosition (x, y).
-            Cria o efeito de "lanterna" atrás do texto.
-        */}
-        <div 
-          className="absolute inset-0 bg-white/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-          style={{
-            background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.1), transparent 40%)`
-          }}
-        ></div>
+        className="absolute inset-0 z-0 pointer-events-none opacity-20"
+        style={{ 
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+          maskImage: 'radial-gradient(circle at center, black 40%, transparent 80%)'
+        }}
+      ></div>
+
+      {/* CONTEÚDO PRINCIPAL */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto pointer-events-none">
         
-        {/* O Conteúdo da Frase */}
-        <div className="relative bg-black/20 backdrop-blur-sm border border-white/10 rounded-xl p-8 md:p-10 transition-all duration-300 hover:border-emerald-500/30">
-          
-          {/* Decoração Tech */}
-          <div className="flex justify-between items-center mb-6 opacity-50 text-[10px] tracking-widest font-mono uppercase">
-             <span>// Protocol: Wisdom</span>
-             <span className="flex items-center gap-2">
-               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-               Live
-             </span>
-          </div>
-
-          <h2 className="text-lg md:text-2xl font-light leading-relaxed text-gray-300 font-mono tracking-wide text-center">
-            &quot;A magia que você procura,<br className="hidden md:block" />
-            está no <HackerText 
-                      text="TRABALHO" 
-                      className="text-white font-bold inline-block px-1 decoration-emerald-500 underline decoration-2 underline-offset-4 hover:bg-emerald-500/10 transition-colors" 
-                      speed={50} 
-                    /> <br className="hidden md:block" />
-            que você <HackerText 
-                      text="IGNORA" 
-                      className="text-white font-bold inline-block px-1 decoration-red-500 underline decoration-2 underline-offset-4 hover:bg-red-500/10 transition-colors" 
-                      speed={70} 
-                    />.&quot;
-          </h2>
-
-          {/* Prompt de ação no rodapé do card */}
-          <div className="mt-6 text-center opacity-0 group-hover:opacity-60 transition-opacity duration-500">
-            <span className="text-[9px] uppercase tracking-[0.3em] text-white/50">
-              Hover to Decrypt
+        {/* Header Data */}
+        <div className="hero-data flex justify-between items-end border-b border-white/10 pb-4 mb-10 mix-blend-difference">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-mono text-emerald-500 uppercase tracking-widest">
+              System Status: Online
+            </span>
+            <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">
+              Lat: 38.7223° N / Lon: 9.1393° W
             </span>
           </div>
+          <div className="hidden md:block text-right">
+             <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest block">
+               Codebase: V.2.4
+             </span>
+          </div>
         </div>
+
+        {/* TÍTULO PRINCIPAL */}
+        <h1 
+          ref={titleRef}
+          className="text-[13vw] md:text-[10vw] font-black text-white leading-[0.85] tracking-tighter mix-blend-exclusion"
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          WILLIAM<br />
+          {/* Correção: bg-linear-to-r */}
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-gray-500 via-white to-gray-500 animate-gradient-x">
+            REIS
+          </span>
+        </h1>
+
+        {/* Footer Data / Subtitle */}
+        <div 
+          ref={subtitleRef}
+          className="hero-data mt-10 md:mt-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6"
+        >
+          <div className="max-w-md">
+            <p className="text-sm md:text-base text-gray-400 font-light leading-relaxed">
+              A magia que voce esta procurando esta no trabalho duro que voce esta evitando.
+            </p>
+          </div>
+
+          <button className="pointer-events-auto group flex items-center gap-4 px-8 py-4 bg-white/5 backdrop-blur border border-white/10 rounded-full hover:bg-emerald-500/10 hover:border-emerald-500 transition-all duration-300">
+            <span className="text-xs font-mono text-white uppercase tracking-widest group-hover:text-emerald-500">
+              Initialize Protocol
+            </span>
+            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]"></span>
+          </button>
+        </div>
+
       </div>
 
-      {/* --- LAYER 3: HUD CORNERS --- */}
-      <div className="absolute bottom-8 left-8 hidden md:block text-[10px] font-mono text-gray-500 tracking-widest uppercase">
-         <span className="text-white">System:</span> Online
-      </div>
-      <div className="absolute bottom-8 right-8 hidden md:block text-[10px] font-mono text-gray-500 tracking-widest uppercase text-right">
-         V2.4 [Stable]
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hero-data">
+        {/* Correção: w-px e bg-linear-to-b */}
+        <div className="w-px h-20 bg-linear-to-b from-transparent via-emerald-500 to-transparent opacity-50"></div>
       </div>
 
     </section>

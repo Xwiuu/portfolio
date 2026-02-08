@@ -1,14 +1,22 @@
 'use client';
 
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { MeshDistortMaterial, Sphere, OrbitControls, Environment } from '@react-three/drei';
+import { MeshDistortMaterial, OrbitControls, Environment } from '@react-three/drei';
 import { useSpring, a } from '@react-spring/three'; // Animação suave 3D
 import { useDrag } from '@use-gesture/react';
 import * as THREE from 'three';
 
+// --- TYPE DEFINITIONS ---
+interface SpecimenConfig {
+  distortion: number;
+  speed: number;
+  color: string;
+  wireframe: boolean;
+}
+
 // --- COMPONENTE 3D INTERATIVO (O Bicho na Jaula) ---
-function Specimen({ config }: { config: any }) {
+function Specimen({ config }: { config: SpecimenConfig }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [active, setActive] = useState(false);
   
@@ -19,7 +27,7 @@ function Specimen({ config }: { config: any }) {
     config: { mass: 1, tension: 350, friction: 40 }
   }));
 
-  const bind = useDrag(({ active, movement: [x, y], timeStamp, cancel }) => {
+  const bind = useDrag(({ active, movement: [x, y] }) => {
     if (active) {
       // Puxa o objeto (limitado para não sair da tela)
       api.start({ 
@@ -34,7 +42,7 @@ function Specimen({ config }: { config: any }) {
     }
   });
 
-  useFrame((state) => {
+  useFrame(() => {
     if (!meshRef.current) return;
     // Rotação constante baseada na velocidade configurada
     meshRef.current.rotation.x += 0.005 * config.speed;
@@ -45,7 +53,7 @@ function Specimen({ config }: { config: any }) {
   const currentColor = active ? "#ff0055" : config.color;
 
   return (
-    // @ts-ignore
+    // @ts-expect-error bind() from @use-gesture/react has incompatible type with mesh props
     <a.mesh {...bind()} ref={meshRef} position={position} scale={scale}>
       <sphereGeometry args={[1, 64, 64]} />
       <MeshDistortMaterial
@@ -95,7 +103,7 @@ export default function Lab() {
         
         <div className="mb-12">
           <span className="text-[10px] font-mono text-purple-500 tracking-widest uppercase block mb-4">
-            // 03. Simulation
+            {/* 03. Simulation */}
           </span>
           <h2 className="text-4xl md:text-6xl font-black text-white mb-2">
             THE LAB
