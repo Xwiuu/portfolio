@@ -56,8 +56,9 @@ export default function Footer() {
     return () => ctx.revert();
   }, []);
 
-  // 3. Efeito Magnético
+  // 3. Efeito Magnético (Apenas Desktop)
   const handleMagnetic = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (window.innerWidth < 768) return; 
     const btn = e.currentTarget;
     const rect = btn.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
@@ -68,6 +69,7 @@ export default function Footer() {
   };
 
   const resetMagnetic = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (window.innerWidth < 768) return; 
     const btn = e.currentTarget;
     gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" });
     gsap.to(btn.children, { x: 0, y: 0, duration: 0.5 });
@@ -81,7 +83,7 @@ export default function Footer() {
   return (
     <footer 
       ref={footerRef}
-      className="relative w-full bg-black pt-32 pb-0 overflow-hidden border-t border-white/10"
+      className="relative w-full bg-black pt-16 md:pt-32 pb-0 overflow-hidden border-t border-white/10"
     >
       
       {/* Background Grid */}
@@ -89,7 +91,7 @@ export default function Footer() {
         className="absolute inset-0 pointer-events-none opacity-20"
         style={{ 
           backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
-          backgroundSize: '50px 50px'
+          backgroundSize: '40px 40px' 
         }}
       ></div>
 
@@ -99,54 +101,52 @@ export default function Footer() {
         className="absolute left-0 w-full h-px bg-emerald-500/50 shadow-[0_0_20px_#10b981] z-0 pointer-events-none top-0"
       ></div>
 
-      <div className="px-6 md:px-20 relative z-10">
+      <div className="px-6 md:px-20 relative z-10 w-full">
         
         {/* HEADER */}
-        <div className="flex flex-col md:flex-row justify-between items-start mb-20">
-            <div>
-                <span className="text-[10px] font-mono text-emerald-500 tracking-widest uppercase block mb-4">
+        <div className="flex flex-col md:flex-row justify-between items-start mb-12 md:mb-20">
+            <div className="w-full md:w-auto">
+                <span className="text-[10px] font-mono text-emerald-500 tracking-widest uppercase block mb-3 md:mb-4">
                     {'{ 05. Signal Lost }'}
                 </span>
-                <h2 className="text-6xl md:text-9xl font-black text-white tracking-tighter mix-blend-difference">
+                {/* Título com tipografia fluida (vw) para caber sempre no mobile */}
+                <h2 className="text-[14vw] md:text-9xl font-black text-white leading-none tracking-tighter mix-blend-difference whitespace-nowrap">
                     LET&apos;S TALK
                 </h2>
             </div>
             
-            <div className="mt-10 md:mt-0 flex flex-col items-end">
-                {/* Removi o email específico, mantendo apenas a descrição de disponibilidade */}
-                <p className="text-xl md:text-2xl text-white font-bold max-w-md text-right leading-relaxed">
+            <div className="mt-6 md:mt-0 flex flex-col items-start md:items-end w-full md:w-auto">
+                <p className="text-base sm:text-xl md:text-2xl text-white font-bold max-w-md text-left md:text-right leading-relaxed">
                     Start a project? <br/>
-                    <span className="text-gray-500 font-normal text-base">
+                    <span className="text-gray-500 font-normal text-xs md:text-base">
                         Available for freelance projects and high-end technical partnerships.
                     </span>
                 </p>
             </div>
         </div>
 
-        {/* SOCIAL GRID (Adaptado para 3 itens) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-32">
+        {/* SOCIAL GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-16 md:mb-32">
             {[
-                // Substituímos LINKEDIN por WHATSAPP
-                // IMPORTANTE: Coloca o teu número real no href abaixo (ex: https://wa.me/5511999999999)
-                { name: "WHATSAPP", url: "https://wa.me/SEU_NUMERO_AQUI" },
-                { name: "GITHUB", url: "#" },
-                { name: "INSTAGRAM", url: "#" }
-                // Twitter removido
+                { name: "WHATSAPP", url: "https://wa.me/54984475368" },
+                { name: "GITHUB", url: "https://github.com/Xwiuu" },
+                { name: "INSTAGRAM", url: "https://www.instagram.com/_wiiuu__/" }
             ].map((social) => (
                 <a 
                     key={social.name}
                     href={social.url}
                     onMouseMove={handleMagnetic}
                     onMouseLeave={resetMagnetic}
-                    className="group relative h-32 border border-white/10 rounded-lg flex items-center justify-center overflow-hidden hover:bg-white/5 transition-colors cursor-none"
+                    // Altura fixada para mobile (70px) para não parecer um tijolo gigante
+                    className="group relative h-[70px] md:h-32 border border-white/10 rounded-lg flex items-center justify-center overflow-hidden hover:bg-white/5 transition-colors md:cursor-none"
                     target="_blank" 
                     rel="noopener noreferrer"
                 >
                     <div className="flex flex-col items-center">
-                        <span className="text-lg font-bold text-white group-hover:text-emerald-500 transition-colors z-10">
+                        <span className="text-sm md:text-lg font-bold text-white md:group-hover:text-emerald-500 transition-colors z-10">
                             {social.name}
                         </span>
-                        <span className="text-[9px] font-mono text-gray-600 uppercase mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-[8px] md:text-[9px] font-mono text-gray-600 uppercase mt-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                             Connect &nearr;
                         </span>
                     </div>
@@ -155,20 +155,20 @@ export default function Footer() {
         </div>
 
         {/* BOTTOM BAR */}
-        <div className="flex flex-col md:flex-row justify-between items-center py-8 border-t border-white/10">
-            <div className="flex items-center gap-3 mb-4 md:mb-0">
+        <div className="flex flex-col sm:flex-row justify-between items-center py-6 md:py-8 border-t border-white/10 gap-4 sm:gap-0 w-full">
+            <div className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">
+                <span suppressHydrationWarning className="text-[9px] md:text-[10px] font-mono text-gray-400 uppercase tracking-widest text-center sm:text-left">
                     System Online • {time}
                 </span>
             </div>
 
             <button 
                 onClick={scrollToTop}
-                className="group flex items-center gap-2 text-[10px] font-mono text-white hover:text-emerald-500 transition-colors uppercase tracking-widest"
+                className="group flex items-center gap-2 text-[9px] md:text-[10px] font-mono text-white hover:text-emerald-500 transition-colors uppercase tracking-widest"
             >
                 Return to Surface
-                <span className="transform group-hover:-translate-y-1 transition-transform duration-300">&uarr;</span>
+                <span className="transform md:group-hover:-translate-y-1 transition-transform duration-300">&uarr;</span>
             </button>
         </div>
 
@@ -176,7 +176,7 @@ export default function Footer() {
 
       {/* INFINITE TICKER */}
       <div className="w-full bg-emerald-500/10 border-t border-emerald-500/20 py-2 overflow-hidden">
-        <div ref={tickerRef} className="whitespace-nowrap flex gap-10">
+        <div ref={tickerRef} className="whitespace-nowrap flex gap-10 w-max">
             <span className="text-[10px] font-mono text-emerald-500 uppercase tracking-[0.2em]">
                 {'/// END OF TRANSMISSION /// STANDBY FOR REBOOT /// INITIALIZING NEXT PROTOCOL /// WILLIAM REIS DEV ///'}
             </span>

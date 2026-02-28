@@ -6,71 +6,103 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Tipagem correta para evitar erros de TS
 type Project = {
   id: string;
   title: string;
   category: string;
   img: string;
   color: string;
+  url: string;
 };
 
 const projects: Project[] = [
   {
     id: "01",
-    title: "NEON NEXUS",
+    title: "AURA STUDIO",
     category: "Web Arch",
-    img: "https://images.unsplash.com/photo-1481487484168-9b995ecc1679?q=80&w=2000",
+    img: "https://i.ibb.co/r23cGPr8/Captura-de-tela-2026-02-24-222136.png",
     color: "#10b981",
+    url: "https://aura-studio-iota-two.vercel.app",
   },
   {
     id: "02",
-    title: "VOID WALKER",
-    category: "3D Exp",
-    img: "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?q=80&w=2000",
+    title: "JN PRODUTORA",
+    category: "Production",
+    img: "https://i.ibb.co/DH8GPq3f/Captura-de-tela-2026-02-24-222209.png",
     color: "#8b5cf6",
+    url: "https://www.jnprodutora.com.br",
   },
   {
     id: "03",
-    title: "CYBER CORE",
-    category: "Security",
-    img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2000",
+    title: "CINE AETHER",
+    category: "Entertainment",
+    img: "https://i.ibb.co/Tq4Jf9nx/Captura-de-tela-2026-02-24-222224.png",
     color: "#ef4444",
+    url: "https://cine-aether.vercel.app",
   },
   {
     id: "04",
-    title: "AERO GRID",
-    category: "SaaS",
-    img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000",
+    title: "NEXUS CONSULTING",
+    category: "Business",
+    img: "https://i.ibb.co/chnyK8TY/Captura-de-tela-2026-02-24-222235.png",
     color: "#3b82f6",
+    url: "https://nexus-consulting-one.vercel.app",
   },
   {
     id: "05",
-    title: "DATA HIVE",
-    category: "Big Data",
-    img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2000",
+    title: "ART SCROLL",
+    category: "Creative",
+    img: "https://i.ibb.co/pv57vTxK/Captura-de-tela-2026-02-24-222253.png",
     color: "#f59e0b",
+    url: "https://art-scroll.vercel.app",
   },
   {
     id: "06",
-    title: "QUANTUM",
-    category: "Fintech",
-    img: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2000",
+    title: "LYNE EXPERIENCE",
+    category: "Experience",
+    img: "https://i.ibb.co/HLRCFjgm/Captura-de-tela-2026-02-24-222306.png",
     color: "#ec4899",
+    url: "https://lyne-experience.vercel.app",
   },
   {
     id: "07",
-    title: "BIO SYNTH",
-    category: "Health",
+    title: "GENGAR OS",
+    category: "Performance",
     img: "https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=2000",
-    color: "#06b6d4",
+    color: "#a855f7",
+    url: "https://github.com/Xwiuu/gengar-os",
   },
   {
     id: "08",
-    title: "ECHO",
-    category: "Social",
-    img: "https://images.unsplash.com/photo-1478737270239-2f02b77ac6d5?q=80&w=2000",
+    title: "PERFSCAN",
+    category: "Web Perf",
+    img: "https://i.ibb.co/bVFQpXn/Gemini-Generated-Image-hze64lhze64lhze6.png",
     color: "#ffffff",
+    url: "https://github.com/Xwiuu/perfscan",
+  },
+  {
+    id: "09",
+    title: "ORDER FLOW",
+    category: "Application",
+    img: "https://i.ibb.co/v9DvQ2n/Gemini-Generated-Image-exj20aexj20aexj2.png",
+    color: "#10b981",
+    url: "https://github.com/Xwiuu/OrderFlow",
+  },
+  {
+    id: "10",
+    title: "SECUREBOX LAB",
+    category: "Cybersecurity",
+    img: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2000",
+    color: "#ef4444",
+    url: "https://github.com/Xwiuu/securebox_lab",
+  },
+  {
+    id: "11",
+    title: "GHOST MIRROR",
+    category: "Future Cyber",
+    img: "https://images.unsplash.com/photo-1614064641935-4475e8329227?q=80&w=2000",
+    color: "#6b7280",
+    url: "#",
   },
 ];
 
@@ -83,52 +115,39 @@ export default function Portfolio() {
     const ctx = gsap.context(() => {
       const track = trackRef.current;
       const section = sectionRef.current;
-
       if (!track || !section) return;
 
-      // --- MÁGICA DE CÁLCULO DE SCROLL ---
-      // Calculamos: Largura Total da Pista - Largura da Tela
-      // O resultado é exatamente quanto precisamos "puxar" para a esquerda.
-      const getScrollAmount = () => {
-        return -(track.scrollWidth - window.innerWidth);
-      };
+      const getScrollAmount = () => -(track.scrollWidth - window.innerWidth);
 
-      // 1. SCROLL HORIZONTAL
       const tween = gsap.to(track, {
-        x: getScrollAmount, // Usa função para recalcular se a tela mudar
+        x: getScrollAmount,
         ease: "none",
         scrollTrigger: {
           trigger: section,
-          pin: true, // Trava a secção verticalmente
-          scrub: 1, // Suavidade (1s delay) para não "bater" seco
+          pin: true,
+          scrub: 1,
           start: "top top",
-          // A Duração do scroll vertical é igual à distância horizontal + uma margem
-          // Isso garante uma velocidade de scroll 1:1 natural
-          end: () => `+=${Math.abs(getScrollAmount()) + 1000}`,
-          invalidateOnRefresh: true, // Importante: Recalcula se redimensionares
-          anticipatePin: 1, // Previne o "pulo" visual ao travar
+          end: () => `+=${track.scrollWidth}`, // Distância vertical baseada no conteúdo real
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
         },
       });
 
-      // 2. CÉLULA SYMBIONT (Rotação contínua)
       gsap.to(symbiontRef.current, {
         rotation: 360 * 3,
         ease: "none",
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: () => `+=${Math.abs(getScrollAmount()) + 1000}`,
+          end: () => `+=${track.scrollWidth}`,
           scrub: 1,
         },
       });
 
-      // 3. ANIMAÇÃO DOS CARDS (Parallax Individual)
       const cards = gsap.utils.toArray(".project-card") as HTMLElement[];
       cards.forEach((card) => {
         const img = card.querySelector("img");
         const line = card.querySelector(".connect-line");
-
-        // Linha cresce
         if (line) {
           gsap.fromTo(
             line,
@@ -136,10 +155,9 @@ export default function Portfolio() {
             {
               scaleY: 1,
               opacity: 1,
-              ease: "power2.out",
               scrollTrigger: {
                 trigger: card,
-                containerAnimation: tween, // Liga ao scroll horizontal
+                containerAnimation: tween,
                 start: "left center",
                 end: "right center",
                 scrub: true,
@@ -147,8 +165,6 @@ export default function Portfolio() {
             },
           );
         }
-
-        // Imagem mexe (Parallax)
         if (img) {
           gsap.fromTo(
             img,
@@ -166,8 +182,9 @@ export default function Portfolio() {
           );
         }
       });
-    }, sectionRef);
 
+      ScrollTrigger.refresh();
+    }, sectionRef);
     return () => ctx.revert();
   }, []);
 
@@ -175,11 +192,9 @@ export default function Portfolio() {
     <section
       id="portfolio"
       ref={sectionRef}
-      // 'h-screen' garante altura cheia para o pin
-      // 'overflow-hidden' é CRUCIAL para não quebrar o layout
       className="h-screen w-full bg-black relative overflow-hidden flex flex-col justify-center"
     >
-      {/* Background Grid - Sintaxe V4 Corrigida */}
+      {/* Background Grid */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -189,87 +204,76 @@ export default function Portfolio() {
         }}
       ></div>
 
-      {/* Header Fixo */}
-      <div className="absolute top-10 left-6 md:left-20 z-20 mix-blend-difference pointer-events-none">
-        {/* Comentário JSX Corrigido */}
-        <span className="text-[10px] font-mono text-emerald-500 tracking-widest uppercase block mb-2">
+      {/* Header Responsivo */}
+      <div className="absolute top-6 md:top-10 left-6 md:left-20 z-20 mix-blend-difference pointer-events-none">
+        <span className="text-[10px] font-mono text-emerald-500 tracking-widest uppercase block mb-1 md:mb-2">
           {"{ 04. Neural Network }"}
         </span>
-        <h2 className="text-5xl font-black text-white tracking-tighter">
+        <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter">
           CASE STUDIES
         </h2>
       </div>
 
-      {/* TRACKER (A Pista) */}
-      {/* w-max: A pista tem o tamanho exato do conteúdo (nem mais, nem menos) */}
       <div
         ref={trackRef}
         className="flex items-center h-full w-max px-10 md:px-20 will-change-transform"
       >
-        {/* Linha Central */}
         <div className="absolute left-0 right-0 top-1/2 h-px bg-white/10 w-full pointer-events-none"></div>
 
-        {/* Célula Symbiont (Fixa no Centro da Tela) */}
         <div className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
           <div
             ref={symbiontRef}
-            className="w-24 h-24 rounded-full border border-white/20 bg-emerald-500/10 backdrop-blur-md flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.3)] relative"
+            className="w-16 h-16 md:w-24 md:h-24 rounded-full border border-white/20 bg-emerald-500/10 backdrop-blur-md flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.3)] relative"
           >
-            <div className="w-8 h-8 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_20px_#10b981]"></div>
-            <div
-              className="absolute inset-0 border border-emerald-500/30 rounded-full animate-spin-slow"
-              style={{ animationDuration: "10s" }}
-            ></div>
+            <div className="w-6 h-6 md:w-8 md:h-8 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_20px_#10b981]"></div>
           </div>
         </div>
 
-        {/* LOOP DOS CARDS */}
         {projects.map((project, index) => {
           const isTop = index % 2 === 0;
-
           return (
             <div
               key={project.id}
-              // Classes V4 corrigidas: shrink-0, w-screen (mobile)
-              className="project-card relative w-screen md:w-150 shrink-0 flex flex-col justify-center items-center h-full mx-4 md:mx-20"
+              className="project-card relative w-[100vw] md:w-150 shrink-0 flex flex-col justify-center items-center h-full mx-4 md:mx-20"
             >
               <div
-                className={`relative w-[80vw] md:w-125 flex flex-col ${isTop ? "mb-40" : "mt-40"}`}
+                // Ajuste crítico: redução da margem alternada no mobile para caber no ecrã
+                className={`relative w-[85vw] md:w-125 flex flex-col ${isTop ? "mb-16 md:mb-40" : "mt-16 md:mt-40"}`}
               >
-                {/* Linha de Conexão - Sintaxe de Gradiente Segura */}
                 <div
-                  className={`connect-line absolute left-1/2 w-px z-0 ${isTop ? "-bottom-20 h-40 origin-top" : "-top-20 h-40 origin-bottom"}`}
+                  // Ajuste crítico: tamanho da linha adaptada para mobile
+                  className={`connect-line absolute left-1/2 w-px z-0 ${isTop ? "-bottom-10 md:-bottom-20 h-20 md:h-40 origin-top" : "-top-10 md:-top-20 h-20 md:h-40 origin-bottom"}`}
                   style={{
                     background: `linear-gradient(to ${isTop ? "bottom" : "top"}, ${project.color}, transparent)`,
                   }}
                 ></div>
-                <div
-                  className={`absolute left-1/2 w-2 h-2 rounded-full z-0 ${isTop ? "bottom-20" : "top-20"}`}
-                  style={{ background: project.color }}
-                ></div>
 
-                {/* Card */}
                 <div className="group relative bg-[#0a0a0a] border border-white/10 rounded-2xl p-2 overflow-hidden hover:border-white/30 transition-colors duration-500 shadow-2xl">
-                  {/* Imagem Container - Classes V4 (h-75/h-100) */}
-                  <div className="relative h-75 md:h-100 w-full rounded-xl overflow-hidden bg-gray-900">
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                  {/* Ajuste crítico: Altura do card menor no mobile (h-64) e fixa no desktop (h-[400px]) */}
+                  <div className="relative h-64 md:h-[400px] w-full rounded-xl overflow-hidden bg-gray-900">
                     <img
                       src={project.img}
                       alt={project.title}
-                      loading="eager" // Força carregamento rápido para cálculo correto
                       className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                     />
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      // Ajuste crítico: Sempre visível no mobile, requer hover apenas no md:
+                      className="absolute bottom-4 right-4 z-20 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 bg-white text-black px-4 py-1.5 rounded-full text-[10px] font-mono uppercase hover:bg-emerald-500 hover:text-white"
+                    >
+                      View Project
+                    </a>
                     <div className="absolute top-4 left-4 z-20 bg-black/50 backdrop-blur border border-white/10 px-3 py-1 rounded-full">
                       <span className="text-[10px] font-mono uppercase tracking-widest text-white">
                         {project.category}
                       </span>
                     </div>
                   </div>
-
-                  <div className="p-5 flex justify-between items-end">
+                  <div className="p-4 md:p-5 flex justify-between items-end">
                     <div>
-                      <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
+                      <h3 className="text-lg md:text-2xl font-bold text-white mb-1">
                         {project.title}
                       </h3>
                       <div className="flex items-center gap-2 text-[10px] font-mono text-gray-500">
@@ -277,9 +281,6 @@ export default function Portfolio() {
                         <span className="w-1 h-1 rounded-full bg-gray-500"></span>
                         <span>SECURE</span>
                       </div>
-                    </div>
-                    <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white text-xs group-hover:bg-white group-hover:text-black transition-colors">
-                      &nearr;
                     </div>
                   </div>
                 </div>

@@ -99,9 +99,10 @@ export default function Lab() {
     <section id="lab" className="min-h-screen w-full flex flex-col md:flex-row bg-black relative z-20 overflow-hidden">
       
       {/* --- COLUNA ESQUERDA: O PAINEL DE CONTROLO (HUD) --- */}
-      <div className="w-full md:w-1/3 p-10 md:p-20 flex flex-col justify-center relative z-20 bg-black/80 backdrop-blur-md border-r border-white/10">
+      {/* Reduzi o padding no mobile (p-6) para o painel caber melhor em ecrãs pequenos */}
+      <div className="w-full md:w-1/3 p-6 sm:p-10 md:p-20 flex flex-col justify-center relative z-20 bg-black/80 backdrop-blur-md border-r border-white/10">
         
-        <div className="mb-12">
+        <div className="mb-10 md:mb-12">
           <span className="text-[10px] font-mono text-purple-500 tracking-widest uppercase block mb-4">
             {/* 03. Simulation */}
           </span>
@@ -115,7 +116,7 @@ export default function Lab() {
         </div>
 
         {/* CONTROLS */}
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-8 md:gap-10">
           
           {/* Slider 1: ENTROPY (Distorção) */}
           <div className="group">
@@ -148,7 +149,8 @@ export default function Lab() {
              <div className="text-[10px] font-mono uppercase tracking-widest mb-4 text-gray-400">
               Core Fusion
             </div>
-            <div className="flex gap-4">
+            {/* gap-3 no mobile para não transbordar caso o ecrã seja muito estreito */}
+            <div className="flex gap-3 sm:gap-4">
               {['#ffffff', '#10b981', '#ef4444', '#a855f7', '#3b82f6'].map((c) => (
                 <button
                   key={c}
@@ -167,7 +169,7 @@ export default function Lab() {
           {/* Toggle Wireframe */}
           <button 
             onClick={toggleWireframe}
-            className={`mt-4 border border-white/20 py-3 px-6 rounded text-xs font-mono uppercase tracking-widest transition-all duration-300 hover:bg-white hover:text-black
+            className={`mt-2 md:mt-4 border border-white/20 py-3 px-6 rounded text-xs font-mono uppercase tracking-widest transition-all duration-300 hover:bg-white hover:text-black
               ${config.wireframe ? 'bg-white text-black' : 'text-white'}
             `}
           >
@@ -178,14 +180,16 @@ export default function Lab() {
       </div>
 
       {/* --- COLUNA DIREITA: A JAULA 3D --- */}
-      <div className="w-full md:w-2/3 h-[50vh] md:h-screen relative cursor-grab active:cursor-grabbing bg-grid-pattern">
+      {/* Ajustei a altura no mobile para h-[55vh] e adicionei touch-none para permitir arrastar no telemóvel sem fazer scroll à página inteira */}
+      <div className="w-full md:w-2/3 h-[55vh] md:h-screen relative cursor-grab active:cursor-grabbing bg-grid-pattern touch-none">
         
         {/* Aviso de Simulação */}
-        <div className="absolute top-10 right-10 z-10 text-right pointer-events-none">
+        {/* Posição ajustada no mobile para não cortar */}
+        <div className="absolute top-6 md:top-10 right-6 md:right-10 z-10 text-right pointer-events-none">
           <div className="text-[10px] font-mono text-emerald-500 uppercase tracking-widest animate-pulse">
             ● Live Simulation
           </div>
-          <div className="text-4xl font-bold text-white/5">TEST_01</div>
+          <div className="text-3xl md:text-4xl font-bold text-white/5">TEST_01</div>
         </div>
 
         <Canvas camera={{ position: [0, 0, 3], fov: 45 }} dpr={[1, 2]}>
@@ -207,7 +211,7 @@ export default function Lab() {
         </Canvas>
 
         {/* Instrução de UX */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-[9px] font-mono text-white/30 uppercase tracking-[0.3em] pointer-events-none">
+        <div className="absolute bottom-6 md:bottom-10 left-1/2 transform -translate-x-1/2 text-[9px] font-mono text-white/30 uppercase tracking-[0.3em] pointer-events-none">
           Drag to Mutate
         </div>
 

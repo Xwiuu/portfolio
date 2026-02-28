@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react'; // <--- IMPORTAMOS O USEEFFECT
 import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
 import Symbiont from '../components/Symbiont';
@@ -14,6 +15,34 @@ import Portfolio from '../components/sections/Portfolio';
 import Footer from '../components/sections/Footer';
 
 export default function Home() {
+
+  // --- EFEITO DO TÍTULO DA ABA INTERATIVO ---
+  useEffect(() => {
+    // Podes alterar estes textos para o que achares mais fixe!
+    const originalTitle = "William Reis | The Alchemist"; 
+    const awayTitle = "⚠️ Signal Lost...";
+
+    // Garante que o título inicial está correto quando a página carrega
+    document.title = originalTitle;
+
+    // Função que verifica se a aba está visível ou escondida
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        document.title = awayTitle; // Mudou de aba
+      } else {
+        document.title = originalTitle; // Voltou para a aba
+      }
+    };
+
+    // Adiciona o "espião" (listener) ao browser
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Função de limpeza (boa prática em React para não causar bugs de memória)
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
   return (
     <main className="relative w-full bg-[#050505]">
       
