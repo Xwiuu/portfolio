@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script"; // <--- IMPORTAÇÃO DO SCRIPT DO NEXT
 import "./globals.css";
 
 // Configuração das Fontes
@@ -14,16 +15,13 @@ const geistMono = Geist_Mono({
 });
 
 // --- METADADOS DO SITE & ÍCONES ---
-// Isto é o que aparece no Google, na aba do navegador e quando partilhas o link
 export const metadata: Metadata = {
   title: "William Reis | The Alchemist",
   description: "Portfólio de William Reis - Web Architecture, Automations & Cybersecurity",
   icons: {
-    // Aponta para o ficheiro icon.png (ou .svg) que colocaste na pasta src/app/
     icon: [
       { url: '/icon.png' },
     ],
-    // Ícone otimizado para quando guardam o teu site no ecrã inicial do iPhone
     apple: [
       { url: '/icon.png' }
     ],
@@ -36,12 +34,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Mudei o lang para "pt-BR" para ajudar no SEO, já que o site é em português
     <html lang="pt-BR">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#050505] text-white`}
       >
         {children}
+
+        {/* --- MICROSOFT CLARITY SCRIPT --- */}
+        <Script id="microsoft-clarity" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "vpshgod7g2");
+          `}
+        </Script>
       </body>
     </html>
   );
