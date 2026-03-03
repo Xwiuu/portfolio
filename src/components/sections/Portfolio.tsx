@@ -214,6 +214,18 @@ export default function Portfolio() {
         </h2>
       </div>
 
+      {/* --- AVISO DE SCROLL ADICIONADO AQUI --- */}
+      <div className="absolute bottom-8 md:bottom-12 left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center gap-3 pointer-events-none opacity-80 mix-blend-difference">
+        <span className="text-[9px] md:text-[10px] font-mono text-emerald-500 tracking-[0.2em] uppercase text-center animate-pulse">
+          Scrollar para baixo!
+          <br className="md:hidden" />
+          <span className="hidden md:inline"> - </span>
+          Not Sideways
+        </span>
+        <div className="w-[1px] h-8 md:h-12 bg-gradient-to-b from-emerald-500 to-transparent animate-[bounce_2s_infinite]"></div>
+      </div>
+      {/* -------------------------------------- */}
+
       <div
         ref={trackRef}
         className="flex items-center h-full w-max px-10 md:px-20 will-change-transform"
