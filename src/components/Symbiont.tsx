@@ -20,76 +20,83 @@ export default function Symbiont() {
   useLayoutEffect(() => {
     if (!meshRef.current || !materialRef.current) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: "body",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.5,
-      },
+    // Criamos o matchMedia para rodar a animação de scroll APENAS no Desktop
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: "body",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.5,
+        },
+      });
+
+      // PALETA SURREAL
+      const colors = {
+        idle: new THREE.Color("#ffffff"),
+        loading: new THREE.Color("#00ff88"), // Verde Matrix
+        danger: new THREE.Color("#ff3300"),  // Laranja Explosão
+        void: new THREE.Color("#000000")
+      };
+
+      // 1. HERO -> MANIFESTO (Ativação)
+      tl.to(meshRef.current!.position, {
+        x: 2, y: -1, z: 2, duration: 2
+      }, "manifesto")
+      .to(materialRef.current, {
+        distort: 0.5, opacity: 0.5
+      }, "manifesto")
+      .to(materialRef.current!.color, {
+        r: colors.loading.r, g: colors.loading.g, b: colors.loading.b, duration: 2
+      }, "manifesto") // <--- Cor separada!
+      .to(chaosRef.current, { value: 0.1, duration: 2 }, "manifesto");
+
+
+      // 2. MANIFESTO -> SERVICES (Velocidade)
+      tl.to(meshRef.current!.position, {
+        x: -2, y: 0, z: 0, duration: 2
+      }, "services")
+      .to(materialRef.current, {
+        distort: 0.8, scale: 2, opacity: 0.3
+      }, "services")
+      .to(materialRef.current!.color, {
+        r: colors.idle.r, g: colors.idle.g, b: colors.idle.b, duration: 2
+      }, "services");
+
+
+      // 3. THE LAB (A EXPLOSÃO) ⚠️
+      tl.to(meshRef.current!.position, {
+        x: 0, y: 0, z: 2.5, duration: 1 // Traz MUITO perto (imersivo)
+      }, "lab")
+      .to(materialRef.current, {
+        distort: 3.0,      // Deformação Extrema
+        speed: 20,         // Velocidade Máxima
+        opacity: 0.9,
+        wireframe: true,   // Vê a estrutura a rasgar
+      }, "lab")
+      .to(materialRef.current!.color, {
+        r: colors.danger.r, g: colors.danger.g, b: colors.danger.b, duration: 0.5
+      }, "lab")
+      .to(chaosRef.current, { value: 1.0, duration: 1 }, "lab"); // Ativa o terremoto
+
+
+      // 4. PORTFOLIO (O Colapso)
+      tl.to(meshRef.current!.position, {
+        x: 0, y: -1, z: 0, duration: 2
+      }, "portfolio")
+      .to(materialRef.current, {
+        distort: 0, scale: 1.5, opacity: 0.1, speed: 1
+      }, "portfolio")
+      .to(materialRef.current!.color, {
+        r: colors.idle.r, g: colors.idle.g, b: colors.idle.b, duration: 2
+      }, "portfolio")
+      .to(chaosRef.current, { value: 0, duration: 2 }, "portfolio");
     });
 
-    // PALETA SURREAL
-    const colors = {
-      idle: new THREE.Color("#ffffff"),
-      loading: new THREE.Color("#00ff88"), // Verde Matrix
-      danger: new THREE.Color("#ff3300"),  // Laranja Explosão
-      void: new THREE.Color("#000000")
-    };
-
-    // 1. HERO -> MANIFESTO (Ativação)
-    tl.to(meshRef.current.position, {
-      x: 2, y: -1, z: 2, duration: 2
-    }, "manifesto")
-    .to(materialRef.current, {
-      distort: 0.5, opacity: 0.5
-    }, "manifesto")
-    .to(materialRef.current.color, {
-      r: colors.loading.r, g: colors.loading.g, b: colors.loading.b, duration: 2
-    }, "manifesto") // <--- Cor separada!
-    .to(chaosRef.current, { value: 0.1, duration: 2 }, "manifesto");
-
-
-    // 2. MANIFESTO -> SERVICES (Velocidade)
-    tl.to(meshRef.current.position, {
-      x: -2, y: 0, z: 0, duration: 2
-    }, "services")
-    .to(materialRef.current, {
-      distort: 0.8, scale: 2, opacity: 0.3
-    }, "services")
-    .to(materialRef.current.color, {
-      r: colors.idle.r, g: colors.idle.g, b: colors.idle.b, duration: 2
-    }, "services");
-
-
-    // 3. THE LAB (A EXPLOSÃO) ⚠️
-    tl.to(meshRef.current.position, {
-      x: 0, y: 0, z: 2.5, duration: 1 // Traz MUITO perto (imersivo)
-    }, "lab")
-    .to(materialRef.current, {
-      distort: 3.0,      // Deformação Extrema
-      speed: 20,         // Velocidade Máxima
-      opacity: 0.9,
-      wireframe: true,   // Vê a estrutura a rasgar
-    }, "lab")
-    .to(materialRef.current.color, {
-      r: colors.danger.r, g: colors.danger.g, b: colors.danger.b, duration: 0.5
-    }, "lab")
-    .to(chaosRef.current, { value: 1.0, duration: 1 }, "lab"); // Ativa o terremoto
-
-
-    // 4. PORTFOLIO (O Colapso)
-    tl.to(meshRef.current.position, {
-      x: 0, y: -1, z: 0, duration: 2
-    }, "portfolio")
-    .to(materialRef.current, {
-      distort: 0, scale: 1.5, opacity: 0.1, speed: 1
-    }, "portfolio")
-    .to(materialRef.current.color, {
-      r: colors.idle.r, g: colors.idle.g, b: colors.idle.b, duration: 2
-    }, "portfolio")
-    .to(chaosRef.current, { value: 0, duration: 2 }, "portfolio");
-
+    // Limpa as animações do matchMedia quando o componente for desmontado
+    return () => mm.revert();
   }, []);
 
   useFrame((state) => {
@@ -112,16 +119,8 @@ export default function Symbiont() {
       meshRef.current.position.y += (Math.random() - 0.5) * chaos * 0.05;
 
       // 3. Glitch na Escala (Explode e contrai aleatoriamente)
-      // A escala base é controlada pelo GSAP (aprox 2), nós somamos o ruído
-      const baseScale = meshRef.current.scale.x; // Pega a escala atual do GSAP
+      const baseScale = meshRef.current.scale.x; 
       const noise = (Math.random() - 0.5) * chaos * 0.5;
-      
-      // Aplica o glitch visual sem estragar a animação do scroll
-      // Nota: setScalar afeta x, y e z ao mesmo tempo
-      // Para não "brigar" com o GSAP, fazemos um efeito visual momentâneo
-      // Mas como o GSAP reescreve a escala a cada frame no scroll, 
-      // precisamos de uma abordagem aditiva ou aceitar que o GSAP vence.
-      // TRUQUE: Alteramos apenas visualmente para este frame
       meshRef.current.scale.setScalar(baseScale + noise); 
     }
   });
