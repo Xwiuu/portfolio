@@ -37,6 +37,16 @@ export default function Hero() {
   const containerRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
+  
+  // Estado para sabermos se é mobile e desativarmos o roubo de touch
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -66,9 +76,17 @@ export default function Hero() {
       
       {/* BACKGROUND 3D - Opacidade ajustada para melhor legibilidade no mobile */}
       <div className="absolute inset-0 z-0 opacity-30 sm:opacity-40 md:opacity-60 pointer-events-none md:pointer-events-auto">
-        <Canvas dpr={[1, 2]}>
+        {/* Adicionamos pointerEvents none direto no Canvas se for mobile */}
+        <Canvas dpr={[1, 2]} style={{ pointerEvents: isMobile ? 'none' : 'auto' }}>
           <Suspense fallback={null}>
-            <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
+            {/* Desativamos a rotação manual (enableRotate) e o pan apenas no mobile */}
+            <OrbitControls 
+              enableZoom={false} 
+              enablePan={false}
+              enableRotate={!isMobile} 
+              autoRotate 
+              autoRotateSpeed={0.5} 
+            />
             <ambientLight intensity={0.5} />
             <directionalLight position={[10, 10, 5]} intensity={1} />
             <pointLight position={[-10, -10, -5]} color="#10b981" intensity={2} />
